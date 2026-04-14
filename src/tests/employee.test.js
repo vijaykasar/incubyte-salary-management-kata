@@ -16,4 +16,8 @@ describe("POST /employees", () => {
   const res = await request(app).post("/employees").send({});
   expect(res.status).toBe(400);
 });
+it("should fetch employees", async () => {
+  const res = await request(app).get("/employees");
+  expect(res.status).toBe(200);
+});
 });
