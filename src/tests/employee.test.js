@@ -12,4 +12,8 @@ describe("POST /employees", () => {
 
     expect(res.status).toBe(201);
   });
+  it("should fail if missing fields", async () => {
+  const res = await request(app).post("/employees").send({});
+  expect(res.status).toBe(400);
+});
 });
