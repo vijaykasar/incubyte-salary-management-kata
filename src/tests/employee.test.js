@@ -33,4 +33,8 @@ it("should calculate salary for India", async () => {
   const res = await request(app).get(`/employees/${emp.id}/salary`);
   expect(res.body.netSalary).toBe(90000);
 });
+it("should return country metrics", async () => {
+  const res = await request(app).get("/metrics/country/India");
+  expect(res.status).toBe(200);
+});
 });
