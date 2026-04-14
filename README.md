@@ -1,70 +1,142 @@
 # 💼 Incubyte Salary Management API
 
-A production-ready REST API built using **Node.js (JavaScript)** following strict **Test Driven Development (TDD)** principles.
+A REST API built with **Node.js** and **Express**, using **Prisma** for database access and **Jest / Supertest** for tests.
 
-This application manages employee data, calculates salaries based on country-specific rules, and provides salary insights.
+The project manages employee records, calculates country-specific salary deductions, and exposes basic salary analytics.
 
 ---
 
 # 🚀 Tech Stack
 
-- Node.js (JavaScript)
+- Node.js
 - Express.js
-- SQLite (via Prisma ORM)
-- Jest (Testing)
-- Supertest (API Testing)
+- Prisma ORM
+- PostgreSQL (configured via `DATABASE_URL`)
+- Jest
+- Supertest
 
 ---
 
-# 🧠 Approach
+# ✅ Setup
 
-This project strictly follows **Test Driven Development (TDD)**:
+1. Install dependencies:
 
-1. Write a failing test ❌  
-2. Implement minimal code to pass ✅  
-3. Refactor 🔄  
+   ```bash
+   npm install
+   ```
 
-Each step is committed separately to clearly demonstrate how the code evolved over time.
+2. Configure your database URL:
 
----
+   ```bash
+   setx DATABASE_URL "postgresql://user:password@localhost:5432/database"
+   ```
 
-# 📦 Features
+3. Generate Prisma client:
 
-## 1. Employee CRUD APIs
+   ```bash
+   npx prisma generate
+   ```
 
-- Create employee  
-- Get all employees  
-- Get employee by ID  
-- Update employee  
-- Delete employee  
+4. Start the server:
 
-### Employee Fields
-
-- `fullName` (required)  
-- `jobTitle` (required)  
-- `country` (required)  
-- `salary` (required)  
+   ```bash
+   node src/server.js
+   ```
 
 ---
 
-## 2. Salary Calculation API
+# 🧪 Testing
 
-### Endpoint
+Run the test suite with:
 
+```bash
+npm test
+```
 
+---
 
-### Deduction Rules
+# 📡 API Endpoints
 
-- India → 10% TDS  
-- United States → 12% TDS  
-- Other countries → No deduction  
+## Create employee
 
-### Example Response
+- Method: `POST`
+- Path: `/employees`
+- Body:
+  - `fullName` (string, required)
+  - `jobTitle` (string, required)
+  - `country` (string, required)
+  - `salary` (number, required)
+
+### Example request
 
 ```json
 {
-  "gross": 100000,
-  "deduction": 10000,
+  "fullName": "Vijay",
+  "jobTitle": "Engineer",
+  "country": "India",
+  "salary": 100000
+}
+```
+
+### Success response
+
+- Status: `201`
+- Body: created employee object
+
+
+## List employees
+
+- Method: `GET`
+- Path: `/employees`
+
+### Success response
+
+- Status: `200`
+- Body: array of employee objects
+
+
+## Calculate salary
+
+- Method: `GET`
+- Path: `/employees/:id/salary`
+
+### Behavior
+
+- Retrieves employee by ID
+- Applies country-specific deduction rules
+- Returns `netSalary`
+
+### Deduction rules
+
+- `India` → 10% deduction
+- `United States` → 12% deduction
+- all other countries → 0% deduction
+
+### Example response
+
+```json
+{
   "netSalary": 90000
 }
 ```
+
+
+## Country metrics
+
+- Method: `GET`
+- Path: `/metrics/country/:country`
+
+### Success response
+
+- Status: `200`
+- Body:
+  - `min` — minimum salary for the country
+  - `max` — maximum salary for the country
+  - `avg` — average salary for the country
+
+---
+
+# 📌 Notes
+
+- The current implementation supports employee creation, listing, salary calculation by ID, and country salary metrics.
+- Update / delete employee endpoints are not implemented in the current codebase.
