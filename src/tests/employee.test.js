@@ -1,0 +1,40 @@
+const request = require("supertest");
+const app = require("../src/app");
+
+describe("POST /employees", () => {
+  it("should create employee", async () => {
+    const res = await request(app).post("/employees").send({
+      fullName: "Vijay",
+      jobTitle: "Engineer",
+      country: "India",
+      salary: 100000
+    });
+
+    expect(res.status).toBe(201);
+  });
+  it("should fail if missing fields", async () => {
+  const res = await request(app).post("/employees").send({});
+  expect(res.status).toBe(400);
+});
+it("should fetch employees", async () => {
+  const res = await request(app).get("/employees");
+  expect(res.status).toBe(200);
+});
+it("should calculate salary for India", async () => {
+  const emp = await prisma.employee.create({
+    data: {
+      fullName: "A",
+      jobTitle: "Dev",
+      country: "India",
+      salary: 100000
+    }
+  });
+
+  const res = await request(app).get(`/employees/${emp.id}/salary`);
+  expect(res.body.netSalary).toBe(90000);
+});
+it("should return country metrics", async () => {
+  const res = await request(app).get("/metrics/country/India");
+  expect(res.status).toBe(200);
+});
+});
