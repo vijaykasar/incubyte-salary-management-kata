@@ -20,4 +20,17 @@ it("should fetch employees", async () => {
   const res = await request(app).get("/employees");
   expect(res.status).toBe(200);
 });
+it("should calculate salary for India", async () => {
+  const emp = await prisma.employee.create({
+    data: {
+      fullName: "A",
+      jobTitle: "Dev",
+      country: "India",
+      salary: 100000
+    }
+  });
+
+  const res = await request(app).get(`/employees/${emp.id}/salary`);
+  expect(res.body.netSalary).toBe(90000);
+});
 });
