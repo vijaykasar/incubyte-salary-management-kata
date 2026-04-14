@@ -1,16 +1,22 @@
 const express = require("express");
+const prisma = require("./db");
+
 
 const app = express();
 app.use(express.json());
 
-app.post("/employees", (req, res) => {
+app.post("/employees", async (req, res) => {
   const { fullName, jobTitle, country, salary } = req.body;
 
   if (!fullName || !jobTitle || !country || !salary) {
     return res.status(400).json({ error: "Invalid input" });
   }
 
-  res.status(201).json(req.body);
+  const employee = await prisma.employee.create({
+    data: { fullName, jobTitle, country, salary }
+  });
+
+  res.status(201).json(employee);
 });
 
 module.exports = app;
