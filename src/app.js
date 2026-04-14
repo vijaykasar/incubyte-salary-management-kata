@@ -39,4 +39,21 @@ app.get("/employees/:id/salary", async (req, res) => {
   res.json({ netSalary });
 });
 
+app.get("/metrics/country/:country", async (req, res) => {
+  const employees = await prisma.employee.findMany({
+    where: { country: req.params.country }
+  });
+
+  const salaries = employees.map(e => e.salary);
+
+  const avg =
+    salaries.reduce((a, b) => a + b, 0) / salaries.length || 0;
+
+  res.json({
+    min: Math.min(...salaries) || 0,
+    max: Math.max(...salaries) || 0,
+    avg
+  });
+});
+
 module.exports = app;
