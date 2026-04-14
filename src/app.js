@@ -19,4 +19,9 @@ app.post("/employees", async (req, res) => {
   res.status(201).json(employee);
 });
 
+app.get("/employees", async (req, res) => {
+  const employees = await prisma.employee.findMany();
+  res.json(employees);
+});
+
 module.exports = app;
