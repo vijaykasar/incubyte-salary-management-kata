@@ -24,4 +24,19 @@ app.get("/employees", async (req, res) => {
   res.json(employees);
 });
 
+app.get("/employees/:id/salary", async (req, res) => {
+  const emp = await prisma.employee.findUnique({
+    where: { id: Number(req.params.id) }
+  });
+
+  let deduction = 0;
+
+  if (emp.country === "India") deduction = 0.1;
+  else if (emp.country === "United States") deduction = 0.12;
+
+  const netSalary = emp.salary - emp.salary * deduction;
+
+  res.json({ netSalary });
+});
+
 module.exports = app;
