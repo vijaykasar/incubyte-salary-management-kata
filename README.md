@@ -11,7 +11,7 @@ The project manages employee records, calculates country-specific salary deducti
 - Node.js
 - Express.js
 - Prisma ORM
-- PostgreSQL (configured via `DATABASE_URL`)
+- SQLite (configured via Prisma schema `file:./dev.db`)
 - Jest
 - Supertest
 
@@ -25,19 +25,14 @@ The project manages employee records, calculates country-specific salary deducti
    npm install
    ```
 
-2. Configure your database URL:
-
-   ```bash
-   setx DATABASE_URL "postgresql://user:password@localhost:5432/database"
-   ```
-
-3. Generate Prisma client:
+2. Generate Prisma client and apply the SQLite schema:
 
    ```bash
    npx prisma generate
+   npx prisma db push
    ```
 
-4. Start the server:
+3. Start the server:
 
    ```bash
    node src/server.js
@@ -136,7 +131,35 @@ npm test
 
 ---
 
+## Job title metrics
+
+- Method: `GET`
+- Path: `/metrics/job-title/:jobTitle`
+
+### Success response
+
+- Status: `200`
+- Body:
+  - `min` — minimum salary for the job title
+  - `max` — maximum salary for the job title
+  - `avg` — average salary for the job title
+
+---
+
+## Implementation Details
+
+This project was updated using AI assistance to fix the database configuration, restore failing tests, and implement missing API behavior. Changes include:
+
+- switching Prisma to SQLite with `file:./dev.db`
+- adding update and delete employee endpoints
+- adding job-title salary metrics
+- improving salary validation and missing-entity guards
+- adding global error handling for async routes
+- updating the test suite to use the correct import path and Prisma client
+
+---
+
 # 📌 Notes
 
-- The current implementation supports employee creation, listing, salary calculation by ID, and country salary metrics.
-- Update / delete employee endpoints are not implemented in the current codebase.
+- The current implementation supports employee creation, listing, salary calculation by ID, country salary metrics, job-title metrics, employee updates, and deletes.
+- Salary endpoints now guard missing employees and reject invalid salary values.
